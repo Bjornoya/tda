@@ -5,14 +5,21 @@ import DashboardPage from '../pages/dashboard/dashboard.page';
 interface IRoute extends PathRouteProps {
   name: string;
   protected: boolean;
+  Component: any;
 }
 
 const ROUTES: IRoute[] = [
   {
-    path: '/', name: 'Home Page', Component: HomePage, protected: false,
+    path: '/',
+    name: 'Home Page',
+    protected: false,
+    Component: HomePage,
   },
   {
-    path: '/dashboard', name: 'Dashboard Page', Component: DashboardPage, protected: true,
+    path: '/dashboard',
+    name: 'Dashboard Page',
+    protected: true,
+    Component: DashboardPage,
   },
 ];
 

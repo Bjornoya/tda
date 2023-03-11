@@ -1,5 +1,5 @@
 import React, {
-  useState, createContext, useMemo, useContext,
+  useState, createContext, useMemo, useContext, useEffect,
 } from 'react';
 
 type TUser = {
@@ -41,6 +41,12 @@ export function AuthProvider({ children }: IProps) {
 
   const value = useMemo(() => ({ user, handleLogin, handleLogout }), [user]);
 
+  // TODO: add data validation
+  useEffect(() => {
+    const persistedUser = localStorage.getItem('user');
+    if (persistedUser) setUser(JSON.parse(persistedUser));
+  }, []);
+
   return (
     <AuthContext.Provider value={value}>
       {children}
@@ -49,5 +55,5 @@ export function AuthProvider({ children }: IProps) {
 }
 
 export function useAuth() {
-  useContext(AuthContext);
+  return useContext(AuthContext);
 }
