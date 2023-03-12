@@ -1,19 +1,47 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import Omit from 'lodash.omit';
 import { styled, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button/Button';
+import { useAuth } from '../../../context/auth.context';
+import { useNotification } from '../../../context/notification.context';
+import { loginUser, registerUser } from '../../../config/api';
+
+interface IFormData {
+  username: string;
+  repeatPassword: string;
+  password: string;
+}
 
 function SignupForm() {
   const {
     handleSubmit, watch, control,
-  } = useForm();
-  const onSubmit = (data: any) => data;
+  } = useForm<IFormData>();
+  const { handleLogin } = useAuth();
+  const { notify } = useNotification();
+  const navigate = useNavigate();
+
+  async function onSubmit(data: IFormData) {
+    try {
+      const fields = Omit(data, 'repeatPassword');
+      await registerUser(fields);
+      const response = await loginUser(fields); // automatically login with user's data
+      const authData = await response.json();
+      handleLogin(authData);
+      notify.success('Your account has been successfully created!');
+      navigate('/dashboard');
+    } catch (e: any) {
+      notify.error(e.message || 'Something went wrong...');
+    }
+  }
 
   return (
     <Form
       autoComplete="off"
+      noValidate
       onSubmit={handleSubmit(onSubmit)}
     >
       <Box>
@@ -21,13 +49,13 @@ function SignupForm() {
         <Typography sx={{ margin: '0 0 32px 0' }} variant="h5">Let&apos;s create your account</Typography>
       </Box>
       <Controller
-        name="email"
+        name="username"
         control={control}
         rules={{
-          required: 'Email is required',
+          required: 'Username is required',
           pattern: {
-            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-            message: 'Invalid email address',
+            value: /[A-Za-z0-9]/i,
+            message: 'Wrong username format!',
           },
         }}
         render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -37,7 +65,7 @@ function SignupForm() {
             value={value}
             required
             id="outlined-required"
-            label="Email"
+            label="Username"
             helperText={error?.message}
             InputLabelProps={{
               style: { color: 'rgba(0, 0, 0, 0.6)' },
@@ -58,6 +86,7 @@ function SignupForm() {
             onChange={onChange}
             value={value}
             required
+            type="password"
             id="outlined-required"
             label="Password"
             helperText={error?.message}
@@ -80,6 +109,7 @@ function SignupForm() {
             onChange={onChange}
             value={value}
             required
+            type="password"
             id="outlined-required"
             label="Repeat password"
             helperText={error?.message}

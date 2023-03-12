@@ -24,6 +24,9 @@ const theme = createTheme({
         '"Segoe UI Symbol"',
       ].join(','),
     },
+    button: {
+      textTransform: 'none',
+    },
   },
   components: {
     MuiInputLabel: {
