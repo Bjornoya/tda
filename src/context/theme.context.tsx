@@ -25,6 +25,26 @@ const theme = createTheme({
       ].join(','),
     },
   },
+  components: {
+    MuiInputLabel: {
+      styleOverrides: {
+        asterisk: {
+          color: 'rgba(0, 0, 0, 0.6) !important',
+        },
+        root: {
+          color: 'rgba(0, 0, 0, 0.6) !important',
+        },
+      },
+    },
+    MuiFormHelperText: {
+      styleOverrides: {
+        root: {
+          position: 'absolute',
+          bottom: '-22px',
+        },
+      },
+    },
+  },
 });
 
 function ThemeProvider({ children }: IProps) {
