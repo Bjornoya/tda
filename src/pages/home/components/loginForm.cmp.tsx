@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -6,6 +6,7 @@ import {
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useAuth } from '../../../context/auth.context';
 import { useNotification } from '../../../context/notification.context';
 import { loginUser } from '../../../config/api';
@@ -18,8 +19,10 @@ function LoginForm({ onClick }: IForm) {
   const { handleLogin } = useAuth();
   const { notify } = useNotification();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(fields: ILoginFields) {
+    setLoading(true);
     try {
       const response = await loginUser(fields);
       const authData = await response.json();
@@ -28,8 +31,12 @@ function LoginForm({ onClick }: IForm) {
       navigate('/dashboard');
     } catch (e: any) {
       notify.error(e.message || 'Something went wrong...');
+    } finally {
+      setLoading(false);
     }
   }
+
+  if (loading) return <CircularProgress />;
 
   return (
     <Form

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Omit from 'lodash.omit';
@@ -6,6 +6,7 @@ import { styled, Typography } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button/Button';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useAuth } from '../../../context/auth.context';
 import { useNotification } from '../../../context/notification.context';
 import { loginUser, registerUser } from '../../../config/api';
@@ -18,9 +19,11 @@ function SignupForm({ onClick }: IForm) {
   const { handleLogin } = useAuth();
   const { notify } = useNotification();
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   async function onSubmit(data: ISignUpFields) {
     try {
+      setLoading(true);
       const fields = Omit(data, 'repeatPassword');
       await registerUser(fields);
       const response = await loginUser(fields); // automatically login with user's data
@@ -30,8 +33,12 @@ function SignupForm({ onClick }: IForm) {
       navigate('/dashboard');
     } catch (e: any) {
       notify.error(e.message || 'Something went wrong...');
+    } finally {
+      setLoading(false);
     }
   }
+
+  if (loading) return <CircularProgress />;
 
   return (
     <Form
