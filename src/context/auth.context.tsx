@@ -11,7 +11,7 @@ type TUser = {
 type TAuthContext = {
   user: TUser,
   handleLogin: (param: TUser) => void,
-  handleLogout: (param: TUser) => void,
+  handleLogout: () => void,
 }
 
 interface IProps {
