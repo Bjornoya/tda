@@ -9,22 +9,17 @@ import Button from '@mui/material/Button/Button';
 import { useAuth } from '../../../context/auth.context';
 import { useNotification } from '../../../context/notification.context';
 import { loginUser, registerUser } from '../../../config/api';
+import { IForm, ISignUpFields } from '../home.interface';
 
-interface IFormData {
-  username: string;
-  repeatPassword: string;
-  password: string;
-}
-
-function SignupForm() {
+function SignupForm({ onClick }: IForm) {
   const {
     handleSubmit, watch, control,
-  } = useForm<IFormData>();
+  } = useForm<ISignUpFields>();
   const { handleLogin } = useAuth();
   const { notify } = useNotification();
   const navigate = useNavigate();
 
-  async function onSubmit(data: IFormData) {
+  async function onSubmit(data: ISignUpFields) {
     try {
       const fields = Omit(data, 'repeatPassword');
       await registerUser(fields);
@@ -118,7 +113,14 @@ function SignupForm() {
         )}
       />
       <Buttons>
-        <Button sx={{ width: '45%' }} variant="outlined" size="large">Cancel</Button>
+        <Button
+          onClick={onClick}
+          sx={{ width: '45%' }}
+          variant="outlined"
+          size="large"
+        >
+          Cancel
+        </Button>
         <Button type="submit" sx={{ width: '45%' }} variant="contained" size="large">Create</Button>
       </Buttons>
     </Form>
