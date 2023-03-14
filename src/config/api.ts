@@ -52,6 +52,6 @@ export async function loginUser(data: IUserData) {
   return withErrorHandler(response);
 }
 
-export function getUsers(pageNumber: number) {
-  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${pageNumber}&limit=10`);
+export function getUsers(offset: number) {
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`);
 }
