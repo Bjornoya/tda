@@ -51,6 +51,7 @@
       "error", {
         "devDependencies": true
       }
-    ]
+    ],
+    "no-plusplus": "off"
   }
 }

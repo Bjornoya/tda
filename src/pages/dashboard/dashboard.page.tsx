@@ -1,35 +1,65 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import Tab from '@mui/material/Tab';
-import Tabs from '@mui/material/Tabs/Tabs';
-import Container from '@mui/material/Container/Container';
+import Container from '@mui/material/Box/Box';
+import Box from '@mui/material/Container/Container';
 import Button from '@mui/material/Button/Button';
+import TabPanel from '@mui/lab/TabPanel';
+import TabContext from '@mui/lab/TabContext';
+import TabList from '@mui/lab/TabList';
 import { useAuth } from '../../context/auth.context';
 
-function Dashboard() {
-  const [value, setValue] = React.useState(0);
-  const { handleLogout } = useAuth();
+const TABS = {
+  games: 'games',
+  rankings: 'rankings',
+};
 
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+function Dashboard() {
+  const [value, setValue] = useState(TABS.games);
+  const { handleLogout } = useAuth();
+  const navigate = useNavigate();
+  const { tab, page } = useParams();
+
+  // TODO: persist the 'page' value to prevent loosing the page counter when switching between tabs
+  const handleChange = (newValue: string) => {
+    navigate(`/dashboard/${newValue}/0`, { replace: true });
     setValue(newValue);
   };
 
+  // set tab's value on initial render based on path
+  useEffect(() => {
+    if ((tab && page) && (tab in TABS)) {
+      setValue(tab);
+    }
+  }, []);
+
   return (
-    <Container sx={{
-      display: 'flex', justifyContent: 'space-between', margin: '64px auto',
-    }}
-    >
-      <Tabs value={value} onChange={handleChange}>
-        <Tab sx={{ padding: '0 64px', fontSize: '1rem' }} label="Games" />
-        <Tab sx={{ padding: '0 64px', fontSize: '1rem' }} label="Ranking list" />
-      </Tabs>
-      <Button
-        onClick={handleLogout}
-        sx={{ fontSize: '1rem', padding: '0 32px' }}
-        size="large"
-      >
-        Logout
-      </Button>
-    </Container>
+    <Box>
+      <TabContext value={value}>
+        <Container sx={{
+          display: 'flex', justifyContent: 'space-between', margin: '64px auto',
+        }}
+        >
+          <Box>
+            <TabList onChange={(e, newVal) => handleChange(newVal)} aria-label="tab-list">
+              <Tab value={TABS.games} sx={{ padding: '0 64px', fontSize: '1rem' }} label="Games" />
+              <Tab value={TABS.rankings} sx={{ padding: '0 64px', fontSize: '1rem' }} label="Ranking list" />
+            </TabList>
+          </Box>
+          <Button
+            onClick={handleLogout}
+            sx={{ fontSize: '1rem', padding: '0 32px' }}
+            size="large"
+          >
+            Logout
+          </Button>
+        </Container>
+        <Box>
+          <TabPanel value={TABS.games}>Games page</TabPanel>
+          <TabPanel sx={{ padding: '0 0 0 64px' }} value={TABS.rankings}>Rankings page</TabPanel>
+        </Box>
+      </TabContext>
+    </Box>
   );
 }
 

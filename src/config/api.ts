@@ -24,7 +24,7 @@ function fetchWithAuth(url: string) {
   return fetch(url, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-  });
+  }).then((res) => res.json());
 }
 
 async function withErrorHandler(response: Response) {
