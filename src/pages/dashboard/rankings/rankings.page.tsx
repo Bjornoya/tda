@@ -44,6 +44,11 @@ function Rankings() {
 
   const pageCount = Math.ceil((data?.count || 1) / 10);
 
+  // avoid a layout jump when reaching the last page with empty rows
+  const emptyRows = currentPage > 0
+    ? Math.max(0, (1 + currentPage) * STEP_SIZE - (data?.count || 0))
+    : 0;
+
   const onPageChange = (pageNumber: number) => navigate(`/dashboard/${tab}/${pageNumber - 1}`, { replace: true });
 
   return (
@@ -70,6 +75,11 @@ function Rankings() {
                 <TableCell align="center">{user.win_rate.toFixed(3)}</TableCell>
               </TableRow>
             ))}
+            {emptyRows > 0 && (
+              <TableRow style={{ height: 53 * emptyRows }}>
+                <TableCell colSpan={6} />
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
