@@ -37,6 +37,7 @@ export function AuthProvider({ children }: IProps) {
   const handleLogout = () => {
     localStorage.removeItem('user');
     setUser(initialState);
+    window.location.pathname = '/';
   };
 
   const value = useMemo(() => ({ user, handleLogin, handleLogout }), [user]);
