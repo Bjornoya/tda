@@ -3,10 +3,29 @@ interface IUserData {
   password: string;
 }
 
+/* --- helper functions ---  */
+
 const PARAMS = {
   method: 'POST',
   headers: { 'Content-Type': 'application/json' },
 };
+
+function getAuthToken() {
+  const user = localStorage.getItem('user');
+
+  if (user) {
+    return JSON.parse(user).token;
+  }
+  throw new Error('You have to provide a token!');
+}
+
+function fetchWithAuth(url: string) {
+  const token = getAuthToken();
+  return fetch(url, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+  });
+}
 
 async function withErrorHandler(response: Response) {
   if (!response.ok) {
@@ -14,6 +33,8 @@ async function withErrorHandler(response: Response) {
   }
   return response;
 }
+
+/* --- api call functions ---  */
 
 export async function registerUser(data: IUserData) {
   const response = await fetch(`${process.env.REACT_APP_API_URL}/register/`, {
@@ -29,4 +50,8 @@ export async function loginUser(data: IUserData) {
     body: JSON.stringify(data),
   });
   return withErrorHandler(response);
+}
+
+export function getUsers(pageNumber: number) {
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${pageNumber}&limit=10`);
 }
