@@ -30,7 +30,7 @@ function SignupForm({ onClick }: IForm) {
       const authData = await response.json();
       handleLogin(authData);
       notify.success('Your account has been successfully created!');
-      navigate('/dashboard');
+      navigate('/dashboard/games/0');
     } catch (e: any) {
       notify.error(e.message || 'Something went wrong...');
     } finally {
