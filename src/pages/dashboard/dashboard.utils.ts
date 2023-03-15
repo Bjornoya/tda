@@ -2,6 +2,25 @@ export const INITIAL_PAGE = 0;
 export const STEP_SIZE = 10;
 export const NO_VALUE = '-';
 
+export const FILTERS = [
+  {
+    value: 'open',
+    label: 'Open',
+  },
+  {
+    value: 'progress',
+    label: 'Progress',
+  },
+  {
+    value: 'finished',
+    label: 'Finished',
+  },
+  {
+    value: '',
+    label: '-',
+  },
+];
+
 export function getPageCount(count?: number) {
   return Math.ceil((count || 1) / 10);
 }

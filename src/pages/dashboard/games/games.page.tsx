@@ -1,16 +1,17 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import Button from '@mui/material/Button/Button';
 import Box from '@mui/material/Box/Box';
 import CardActions from '@mui/material/CardActions/CardActions';
 import {
-  Card, CardActionArea, CardContent, Typography,
+  Card, CardActionArea, CardContent, MenuItem, Typography,
 } from '@mui/material';
+import TextField from '@mui/material/TextField';
 import { IGames } from './games.interface';
 import {
-  getPageCount, INITIAL_PAGE, STEP_SIZE, NO_VALUE, errorHandler,
+  getPageCount, INITIAL_PAGE, STEP_SIZE, NO_VALUE, FILTERS, errorHandler,
 } from '../dashboard.utils';
 import { getGames } from '../../../config/api';
 import { useAuth } from '../../../context/auth.context';
@@ -19,14 +20,17 @@ function Games() {
   const { user } = useAuth();
   const { tab, page } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const currentPage = Number(page || INITIAL_PAGE);
   const offset = currentPage * STEP_SIZE;
+  const activeFilter = searchParams.get('status') || '';
+  const queryKey = currentPage + activeFilter;
 
   const {
     data,
   } = useQuery<IGames>({
-    queryKey: ['games', currentPage],
-    queryFn: () => getGames(offset),
+    queryKey: ['games', queryKey],
+    queryFn: () => getGames(offset, activeFilter),
     keepPreviousData: true,
   });
 
@@ -40,7 +44,7 @@ function Games() {
     finished: <Button size="small" color="primary">Results</Button>,
   });
 
-  const onPageChange = (pageNumber: number) => navigate(`/dashboard/${tab}/${pageNumber - 1}`, { replace: true });
+  const onPageChange = (pageNumber: number) => navigate(`/dashboard/${tab}/${pageNumber - 1}/${activeFilter ? `?status=${activeFilter}` : ''}`, { replace: true });
 
   const makeCardBackground = (board: [number[]], players: number[]) => {
     const [p1, p2] = players;
@@ -50,14 +54,40 @@ function Games() {
 
   return (
     <>
-      {' '}
+      <Box sx={{
+        margin: '32px 0',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+      }}
+      >
+        <Button size="large" color="primary" variant="outlined">Create game</Button>
+        <TextField
+          id="outlined-select-currency"
+          select
+          onChange={({ target: { value: status } }) => {
+            navigate(`/dashboard/${tab}/0/${status ? `?status=${status}` : ''}`, { replace: true });
+          }}
+          label="Status"
+          defaultValue=""
+          sx={{ width: '240px' }}
+          size="small"
+          value={activeFilter}
+        >
+          {FILTERS.map((filter) => (
+            <MenuItem key={filter.value} value={filter.value}>
+              {filter.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
         {data?.results.map((game) => {
           const p1 = game.first_player?.username || NO_VALUE;
           const p2 = game.second_player?.username || NO_VALUE;
           const canReturn = isParticipant(p1, p2);
           return (
-            <Card sx={{ width: 345, position: 'relative' }}>
+            <Card key={game.id} sx={{ width: 345, position: 'relative' }}>
               <CardActionArea>
                 <CardContent>
                   <Typography
