@@ -10,7 +10,9 @@ import TableRow from '@mui/material/TableRow';
 import Pagination from '@mui/material/Pagination';
 import Paper from '@mui/material/Paper';
 import { getUsers } from '../../../config/api';
-import { INITIAL_PAGE, STEP_SIZE } from '../dashboard.utils';
+import {
+  getPageCount, INITIAL_PAGE, makeEmptyRows, STEP_SIZE,
+} from '../dashboard.utils';
 import { IUsers } from './rankings.interface';
 
 function Rankings() {
@@ -27,12 +29,8 @@ function Rankings() {
     keepPreviousData: true,
   });
 
-  const pageCount = Math.ceil((data?.count || 1) / 10);
-
-  // avoid a layout jump when reaching the last page with empty rows
-  const emptyRows = currentPage > 0
-    ? Math.max(0, (1 + currentPage) * STEP_SIZE - (data?.count || 0))
-    : 0;
+  const pageCount = getPageCount(data?.count);
+  const emptyRows = makeEmptyRows(currentPage, data?.count);
 
   const onPageChange = (pageNumber: number) => navigate(`/dashboard/${tab}/${pageNumber - 1}`, { replace: true });
 
