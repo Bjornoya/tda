@@ -10,23 +10,8 @@ import TableRow from '@mui/material/TableRow';
 import Pagination from '@mui/material/Pagination';
 import Paper from '@mui/material/Paper';
 import { getUsers } from '../../../config/api';
-
-interface IUser {
-  id: number,
-  username: string,
-  game_count: number,
-  win_rate: number
-}
-
-interface IUsers {
-  count: number,
-  next: string,
-  previous: string
-  results: IUser[]
-}
-
-const INITIAL_PAGE = 0;
-const STEP_SIZE = 10;
+import { INITIAL_PAGE, STEP_SIZE } from '../dashboard.utils';
+import { IUsers } from './rankings.interface';
 
 function Rankings() {
   const { tab, page } = useParams();
