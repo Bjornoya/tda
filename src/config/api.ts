@@ -55,3 +55,7 @@ export async function loginUser(data: IUserData) {
 export function getUsers(offset: number) {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`);
 }
+
+export function getGames(offset: number) {
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/?offset=${offset}&limit=10`);
+}
