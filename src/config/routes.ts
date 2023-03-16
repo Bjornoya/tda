@@ -2,7 +2,7 @@ import { PathRouteProps } from 'react-router-dom';
 import HomePage from '../pages/home/home.page';
 import DashboardPage from '../pages/dashboard/dashboard.page';
 import NotfoundPage from '../pages/notfound/notfound.page';
-import GamePage from '../pages/dashboard/game/game.page';
+import GamePage from '../pages/game/game.page';
 
 interface IRoute extends PathRouteProps {
   name: string;
