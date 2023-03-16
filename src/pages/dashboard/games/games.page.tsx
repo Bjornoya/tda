@@ -13,11 +13,13 @@ import { IGames } from './games.interface';
 import {
   getPageCount, INITIAL_PAGE, STEP_SIZE, NO_VALUE, FILTERS, errorHandler,
 } from '../dashboard.utils';
-import { getGames } from '../../../config/api';
+import { getGames, createGame } from '../../../config/api';
 import { useAuth } from '../../../context/auth.context';
+import { useNotification } from '../../../context/notification.context';
 
 function Games() {
   const { user } = useAuth();
+  const { notify } = useNotification();
   const { tab, page } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -38,11 +40,22 @@ function Games() {
 
   const isParticipant = (p1: string, p2: string) => user.username === p1 || user.username === p2;
 
-  const cardButton = (hasAccess: boolean) => ({
+  const cardButton = (hasAccess: boolean, url: string) => ({
     open: <Button size="small" color="primary">Join</Button>,
-    progress: hasAccess ? <Button size="small" color="primary">Return</Button> : null,
-    finished: <Button size="small" color="primary">Results</Button>,
+    progress: hasAccess ? <Button onClick={() => navigate(url, { replace: true })} size="small" color="primary">Return</Button> : null,
+    finished: <Button onClick={() => navigate(url, { replace: true })} size="small" color="primary">Results</Button>,
   });
+
+  const onCreateGame = async () => {
+    try {
+      const response = await createGame();
+      const url = `/game/${response.id}`;
+      notify.success('Game has been created! Joining...');
+      navigate(url, { replace: true });
+    } catch (e: any) {
+      notify.error(e.message);
+    }
+  };
 
   const onPageChange = (pageNumber: number) => navigate(`/dashboard/${tab}/${pageNumber - 1}/${activeFilter ? `?status=${activeFilter}` : ''}`, { replace: true });
 
@@ -61,7 +74,6 @@ function Games() {
         alignItems: 'center',
       }}
       >
-        <Button size="large" color="primary" variant="outlined">Create game</Button>
         <TextField
           id="outlined-select-currency"
           select
@@ -80,6 +92,7 @@ function Games() {
             </MenuItem>
           ))}
         </TextField>
+        <Button onClick={onCreateGame} size="large" color="primary" variant="outlined">Create game</Button>
       </Box>
       <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '32px' }}>
         {data?.results.map((game) => {
@@ -134,7 +147,7 @@ function Games() {
                   &nbsp;
                   {game.status}
                 </Typography>
-                {cardButton(canReturn)[game.status]}
+                {cardButton(canReturn, `/game/${game.id}`)[game.status]}
               </CardActions>
               <Typography
                 sx={{

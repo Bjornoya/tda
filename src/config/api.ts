@@ -3,6 +3,8 @@ interface IUserData {
   password: string;
 }
 
+type TMethod = 'GET' | 'POST'
+
 /* --- helper functions ---  */
 
 const PARAMS = {
@@ -19,10 +21,10 @@ function getAuthToken() {
   throw new Error('You have to provide a token!');
 }
 
-function fetchWithAuth(url: string) {
+function fetchWithAuth(url: string, method: TMethod) {
   const token = getAuthToken();
   return fetch(url, {
-    method: 'GET',
+    method,
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
   }).then((res) => res.json());
 }
@@ -52,10 +54,18 @@ export async function loginUser(data: IUserData) {
   return withErrorHandler(response);
 }
 
+export function createGame() {
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/`, 'POST');
+}
+
 export function getUsers(offset: number) {
-  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`);
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`, 'GET');
 }
 
 export function getGames(offset: number, status?: string) {
-  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/?offset=${offset}&limit=10${status ? `&status=${status}` : ''}`);
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/?offset=${offset}&limit=10${status ? `&status=${status}` : ''}`, 'GET');
+}
+
+export function getGame(id: number) {
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/${id}`, 'GET');
 }
