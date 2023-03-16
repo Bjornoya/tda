@@ -2,6 +2,7 @@ import { PathRouteProps } from 'react-router-dom';
 import HomePage from '../pages/home/home.page';
 import DashboardPage from '../pages/dashboard/dashboard.page';
 import NotfoundPage from '../pages/notfound/notfound.page';
+import GamePage from '../pages/dashboard/game/game.page';
 
 interface IRoute extends PathRouteProps {
   name: string;
@@ -21,6 +22,12 @@ const ROUTES: IRoute[] = [
     name: 'Dashboard Page',
     protected: false, // make protected again after tests
     Component: DashboardPage,
+  },
+  {
+    path: '/game/:gameId/',
+    name: 'Game Page',
+    protected: false, // make protected again after tests
+    Component: GamePage,
   },
   {
     path: '*',
