@@ -9,6 +9,7 @@ import { AuthProvider } from './context/auth.context';
 import { NotificationProvider } from './context/notification.context';
 import ThemeProvider from './context/theme.context';
 import ProtectedRoute from './@lib/protectedRoute/protectedRoute.cmp';
+import ConnectionStatus from './connectionStatus.cmp';
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ function App() {
                 ))}
               </Routes>
             </Router>
+            <ConnectionStatus />
           </AuthProvider>
         </ThemeProvider>
       </NotificationProvider>
