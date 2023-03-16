@@ -9,7 +9,7 @@ import {
   Card, CardActionArea, CardContent, MenuItem, Typography,
 } from '@mui/material';
 import TextField from '@mui/material/TextField';
-import { IGames } from './games.interface';
+import { IGames } from '../../../interfaces/games.interface';
 import {
   getPageCount, INITIAL_PAGE, STEP_SIZE, NO_VALUE, FILTERS, errorHandler,
 } from '../dashboard.utils';

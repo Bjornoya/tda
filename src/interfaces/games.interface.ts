@@ -4,7 +4,7 @@ type TUser = {
   username: string
 }
 
-interface IGame {
+export interface IGame {
   id: number,
   board: [
     [

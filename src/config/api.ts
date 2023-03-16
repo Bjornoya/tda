@@ -66,6 +66,6 @@ export function getGames(offset: number, status?: string) {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/?offset=${offset}&limit=10${status ? `&status=${status}` : ''}`, 'GET');
 }
 
-export function getGame(id: number) {
+export function getGame(id: string) {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/${id}`, 'GET');
 }
