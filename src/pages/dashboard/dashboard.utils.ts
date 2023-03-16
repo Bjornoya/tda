@@ -17,7 +17,7 @@ export const FILTERS = [
   },
   {
     value: '',
-    label: '-',
+    label: 'All',
   },
 ];
 

@@ -9,6 +9,7 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import { useAuth } from '../../context/auth.context';
 import RankingsPage from './rankings/rankings.page';
+import GamesPage from './games/games.page';
 
 const TABS = {
   games: 'games',
@@ -56,8 +57,8 @@ function Dashboard() {
           </Button>
         </Container>
         <Box>
-          <TabPanel value={TABS.games}>Games page</TabPanel>
-          <TabPanel sx={{ padding: '0 0 0 64px' }} value={TABS.rankings}><RankingsPage /></TabPanel>
+          <TabPanel sx={{ padding: '0' }} value={TABS.games}><GamesPage /></TabPanel>
+          <TabPanel sx={{ padding: '0' }} value={TABS.rankings}><RankingsPage /></TabPanel>
         </Box>
       </TabContext>
     </Box>
