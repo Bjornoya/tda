@@ -71,6 +71,15 @@ export function joinGame(id: number) {
   });
 }
 
+export function makeMove(id: string, move: { row: number, col: number }) {
+  const token = getAuthToken();
+  return fetch(`${process.env.REACT_APP_API_URL}/games/${id}/move/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify(move),
+  });
+}
+
 export function getUsers(offset: number) {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`, 'GET');
 }

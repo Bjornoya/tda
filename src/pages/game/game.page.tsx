@@ -11,7 +11,7 @@ import Paper from '@mui/material/Paper/Paper';
 import Box from '@mui/material/Box/Box';
 import Typography from '@mui/material/Typography/Typography';
 import CircularProgress from '@mui/material/CircularProgress/CircularProgress';
-import { getGame } from '../../config/api';
+import { getGame, makeMove } from '../../config/api';
 import { IGame } from '../../interfaces/games.interface';
 import Board from './components/board.cmp';
 import { useAuth } from '../../context/auth.context';
@@ -27,6 +27,7 @@ function Game() {
   const id = gameId || '';
   const {
     data,
+    refetch,
   } = useQuery<IGame>({
     queryKey: ['game', id],
     queryFn: () => getGame(id),
@@ -42,17 +43,11 @@ function Game() {
   const currentPlayer = data ? data[whoIsNext()] : '';
   const isMyTurn = currentPlayer?.id === user.id;
   const readOnly = isWaiting || isFinished || !isParticipant || !isMyTurn;
-  console.log('isWaiting', isWaiting);
-  console.log('isFinished', isFinished);
-  console.log('isParticipant', isParticipant);
-  console.log('isMyTurn', isMyTurn);
-  console.log('readOnly', readOnly);
-  console.log(currentPlayer?.username, 'It\'s your turn');
 
   function whoIsNext() {
     let firstPlayer = 0;
     let secondPlayer = 0;
-    squares?.forEach((square) => {
+    data?.board?.flat().forEach((square) => {
       if (square === p1?.id) {
         firstPlayer += 1;
       }
@@ -60,28 +55,20 @@ function Game() {
         secondPlayer += 1;
       }
     });
-    if (firstPlayer === 0) return 'first_player';
-    if (firstPlayer > secondPlayer) return 'first_player';
+    if (firstPlayer === secondPlayer) return 'first_player';
+    if (firstPlayer < secondPlayer) return 'first_player';
     if (secondPlayer < firstPlayer) return 'second_player';
     return '';
   }
 
-  // const handleClick = useCallback(
-  // @ts-ignore:next-line
-  // eslint-disable-next-line
-    // (i: number) => setState(({ squares, isXNext }) => {
-  // eslint-disable-next-line no-nested-ternary
-  //     const moves = squares.map((square, idx) => (i === idx ? (isXNext ? 'X' : 'O') : square));
-  //     return {
-  //       squares: moves,
-  //       isXNext: !isXNext,
-  //       winner: calculateWinner(moves),
-  //     };
-  //   }),
-  //   [setState],
-  // );
-
-  const handleClick = () => console.log('clicked');
+  const handleClick = async (idx: number) => {
+    const row = Math.floor(idx / 3);
+    const col = idx % 3;
+    if (gameId) {
+      await makeMove(gameId, { row, col });
+      await refetch();
+    }
+  };
 
   useEffect(() => {
     setState({
@@ -92,7 +79,7 @@ function Game() {
           return square;
         }) || [],
     });
-  }, [data?.board]);
+  }, [data]);
 
   return (
     <Box sx={{
