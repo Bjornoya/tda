@@ -58,6 +58,19 @@ export function createGame() {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/`, 'POST');
 }
 
+export function joinGame(id: number) {
+  const token = getAuthToken();
+  return fetch(`${process.env.REACT_APP_API_URL}/games/${id}/join/`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+    body: JSON.stringify({
+      winner: {},
+      first_player: {},
+      second_player: {},
+    }),
+  });
+}
+
 export function getUsers(offset: number) {
   return fetchWithAuth(`${process.env.REACT_APP_API_URL}/users/?offset=${offset}&limit=10`, 'GET');
 }
@@ -67,5 +80,5 @@ export function getGames(offset: number, status?: string) {
 }
 
 export function getGame(id: string) {
-  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/${id}`, 'GET');
+  return fetchWithAuth(`${process.env.REACT_APP_API_URL}/games/${id}/`, 'GET');
 }

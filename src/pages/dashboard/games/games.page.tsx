@@ -13,7 +13,7 @@ import { IGames } from '../../../interfaces/games.interface';
 import {
   getPageCount, INITIAL_PAGE, STEP_SIZE, NO_VALUE, FILTERS, errorHandler,
 } from '../dashboard.utils';
-import { getGames, createGame } from '../../../config/api';
+import { getGames, createGame, joinGame } from '../../../config/api';
 import { useAuth } from '../../../context/auth.context';
 import { useNotification } from '../../../context/notification.context';
 
@@ -40,8 +40,19 @@ function Games() {
 
   const isParticipant = (p1: string, p2: string) => user.username === p1 || user.username === p2;
 
-  const cardButton = (hasAccess: boolean, url: string) => ({
-    open: <Button size="small" color="primary">Join</Button>,
+  const onJoinGame = async (id: number) => {
+    try {
+      await joinGame(id);
+      const url = `/game/${id}`;
+      notify.success('Joining...');
+      navigate(url, { replace: true });
+    } catch (e: any) {
+      notify.error(e.message);
+    }
+  };
+
+  const cardButton = (hasAccess: boolean, url: string, id: number) => ({
+    open: <Button onClick={() => onJoinGame(id)} size="small" color="primary">Join</Button>,
     progress: hasAccess ? <Button onClick={() => navigate(url, { replace: true })} size="small" color="primary">Return</Button> : null,
     finished: <Button onClick={() => navigate(url, { replace: true })} size="small" color="primary">Results</Button>,
   });
@@ -147,7 +158,7 @@ function Games() {
                   &nbsp;
                   {game.status}
                 </Typography>
-                {cardButton(canReturn, `/game/${game.id}`)[game.status]}
+                {cardButton(canReturn, `/game/${game.id}`, game.id)[game.status]}
               </CardActions>
               <Typography
                 sx={{
