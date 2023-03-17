@@ -12,7 +12,7 @@ interface IBoard {
 function Board({ squares, onClick, readOnly }: IBoard) {
   return (
     <StyledBoard>
-      {squares.map((square, i) => (
+      {squares?.map((square, i) => (
         <Square
           // eslint-disable-next-line react/no-array-index-key
           key={i}

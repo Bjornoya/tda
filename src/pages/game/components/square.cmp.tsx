@@ -22,6 +22,7 @@ const StyledSquare = styled('div')<any>`
   border: 1px solid #999;
   float: left;
   font-size: 56px;
+  font-family:${({ theme }) => theme.typography.fontFamily};
   font-weight: bold;
   width: 120px;
   height: 120px;
