@@ -11,13 +11,13 @@ interface ISquare {
 const Square = memo(({
   value, onClick, index, readOnly,
 }: ISquare) => (
-  <StyledSquare onClick={() => (readOnly ? null : onClick(index))} readOnly={readOnly}>
+  <StyledSquare onClick={() => (readOnly || value ? null : onClick(index))} readOnly={readOnly}>
     {value}
   </StyledSquare>
 ));
 
 const StyledSquare = styled('div')<any>`
-  cursor: ${({ readOnly }) => (readOnly ? 'not-allowed' : 'pointer')};
+  cursor: ${({ readOnly, children }) => (readOnly || children ? 'not-allowed' : 'pointer')};
   background: #FFF;
   border: 1px solid #999;
   float: left;
