@@ -5,15 +5,22 @@ import Square from './square.cmp';
 interface IBoard {
   squares: number[];
   onClick: (idx: number) => void;
+  readOnly: boolean
 }
 
 // Array's length won't be changed. It's ok to use an index here
-function Board({ squares, onClick }: IBoard) {
+function Board({ squares, onClick, readOnly }: IBoard) {
   return (
     <StyledBoard>
       {squares.map((square, i) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <Square key={i} index={i} value={square} onClick={onClick} />
+        <Square
+          // eslint-disable-next-line react/no-array-index-key
+          key={i}
+          index={i}
+          value={square}
+          onClick={onClick}
+          readOnly={readOnly}
+        />
       ))}
     </StyledBoard>
   );

@@ -5,16 +5,20 @@ interface ISquare {
   value: number | null;
   onClick: (idx: number) => void;
   index: number;
+  readOnly: boolean;
 }
 
-const Square = memo(({ value, onClick, index }: ISquare) => (
-  <StyledSquare onClick={() => onClick(index)}>
+const Square = memo(({
+  value, onClick, index, readOnly,
+}: ISquare) => (
+  <StyledSquare onClick={() => (readOnly ? null : onClick(index))} readOnly={readOnly}>
     {value}
   </StyledSquare>
 ));
 
-const StyledSquare = styled('div')`
-  background: #fff;
+const StyledSquare = styled('div')<any>`
+  cursor: ${({ readOnly }) => (readOnly ? 'not-allowed' : 'pointer')};
+  background: #FFF;
   border: 1px solid #999;
   float: left;
   font-size: 56px;
