@@ -1,5 +1,7 @@
 import React from 'react';
 import { useQuery } from '@tanstack/react-query';
+import format from 'date-fns/format';
+import parseISO from 'date-fns/parseISO';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import Pagination from '@mui/material/Pagination';
 import Button from '@mui/material/Button/Button';
@@ -16,6 +18,21 @@ import {
 import { getGames, createGame, joinGame } from '../../../config/api';
 import { useAuth } from '../../../context/auth.context';
 import { useNotification } from '../../../context/notification.context';
+
+export const adjustForUTCOffset = (date: Date) => new Date(
+  date.getUTCFullYear(),
+  date.getUTCMonth(),
+  date.getUTCDate(),
+  date.getUTCHours(),
+  date.getUTCMinutes(),
+  date.getUTCSeconds(),
+);
+
+const formatDate = (dateString: string) => {
+  const date = parseISO(dateString);
+  const dateWithOffset = adjustForUTCOffset(date);
+  return format(dateWithOffset, 'LLL dd yyyy HH:mm');
+};
 
 function Games() {
   const { user } = useAuth();
@@ -147,7 +164,7 @@ function Games() {
                   <Typography variant="body2" color="text.secondary">
                     Created:
                     &nbsp;
-                    {game.created}
+                    {formatDate(game.created)}
                   </Typography>
                 </CardContent>
               </CardActionArea>
