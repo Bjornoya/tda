@@ -21,6 +21,7 @@ export const initialBoardState = {
 };
 
 function Game() {
+  const [intervalMs, setIntervalMs] = useState(2000);
   const [{ squares }, setState] = useState(initialBoardState);
   const { gameId } = useParams();
   const { user } = useAuth();
@@ -32,6 +33,7 @@ function Game() {
     queryKey: ['game', id],
     queryFn: () => getGame(id),
     keepPreviousData: true,
+    refetchInterval: intervalMs,
   });
   const isWaiting = !data?.second_player;
   const isFinished = data?.status === 'finished';
@@ -79,6 +81,10 @@ function Game() {
           return square;
         }) || [],
     });
+    if (data?.status === 'finished') {
+      // @ts-ignore
+      setIntervalMs(false);
+    }
   }, [data]);
 
   return (
