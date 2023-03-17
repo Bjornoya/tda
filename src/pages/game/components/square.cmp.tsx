@@ -8,7 +8,7 @@ interface ISquare {
 }
 
 const Square = memo(({ value, onClick, index }: ISquare) => (
-  <StyledSquare className="Square" onClick={() => onClick(index)}>
+  <StyledSquare onClick={() => onClick(index)}>
     {value}
   </StyledSquare>
 ));
